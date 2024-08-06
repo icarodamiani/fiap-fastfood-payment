@@ -97,7 +97,7 @@ public class PaymentAdapter implements PaymentPort {
         return payment -> OrderTracking.OrderTrackingBuilder.builder()
             .withOrderId(payment.orderId())
             .withOrderStatus("PAYMENT_CONFIRMED")
-            .withOrderStatusValue("1")
+            .withOrderStatusValue("2")
             .build();
     }
 }
