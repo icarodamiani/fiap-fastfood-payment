@@ -1,21 +1,23 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_PASSWORD: "Postgres2024!"
-      POSTGRES_USER: "fastfood"
-      POSTGRES_DB: fastfood-payment
+  mongo:
+    image: docker.io/zcube/bitnami-compat-mongodb:5.0
+    container_name: fastfood-payment-mongo
+    ports:
+      - "27021:27017"
     networks:
       - fastfood-payment-network
+    environment:
+      MONGODB_USERNAME: common_user
+      MONGODB_PASSWORD: password123
+      MONGODB_DATABASE: fastfood
+      MONGODB_ROOT_PASSWORD: rootpassword
     volumes:
-      - ./db/1-create-customer-table.sql:/docker-entrypoint-initdb.d/1-create-customer-table.sql
-    ports:
-      - "5432:5432"
+      - 'mongodb_data:/fastfood'
   sqs:
     image: softwaremill/elasticmq:1.4.2
-    container_name: fastfood-tracking-sqs
+    container_name: fastfood-payment-sqs
     ports:
       - "9324:9324"
       - "9325:9325"
@@ -24,7 +26,6 @@ services:
       - sqs_data:/data/db
     networks:
       - fastfood-payment-network
-
 
 volumes:
   mongodb_data:
