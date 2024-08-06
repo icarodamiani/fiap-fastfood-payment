@@ -25,7 +25,7 @@ aws:
     numberOfRetries: 10
     visibilityTimeOut: 30
     tracking:
-      queue: ${TRACKING_QUEUE_NAME:tracking_update_queue}
+      queue: ${TRACKING_QUEUE_NAME:tracking_queue}
 
 payment:
   webhook: ${WEBHOOK_URL:http://fastfood-payment:8080/v1/payment/receive}

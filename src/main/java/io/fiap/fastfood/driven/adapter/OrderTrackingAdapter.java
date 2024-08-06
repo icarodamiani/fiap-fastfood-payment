@@ -8,6 +8,7 @@ import io.vavr.Function1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
@@ -15,6 +16,7 @@ import software.amazon.awssdk.services.sqs.model.GetQueueUrlRequest;
 import software.amazon.awssdk.services.sqs.model.GetQueueUrlResponse;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
+@Component
 public class OrderTrackingAdapter implements OrderTrackingPort {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderTrackingAdapter.class);

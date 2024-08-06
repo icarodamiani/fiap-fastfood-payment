@@ -11,12 +11,14 @@ import io.fiap.fastfood.driven.core.exception.NotFoundException;
 import io.vavr.CheckedFunction1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageResponse;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 
+@Component
 public class PaymentMessageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentMessageHandler.class);
