@@ -1,6 +1,6 @@
 package io.fiap.fastfood.driver.server.messaging;
 
-import io.fiap.fastfood.driven.core.messaging.PaymentMessageHandler;
+import io.fiap.fastfood.driven.core.domain.payment.port.inbound.PaymentUseCase;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
@@ -26,14 +26,14 @@ public class PaymentEventListener implements CommandLineRunner {
     private final SimpleTriggerContext triggerContext;
     private final PeriodicTrigger trigger;
     private final Scheduler boundedElastic;
-    private final PaymentMessageHandler handler;
+    private final PaymentUseCase service;
 
     public PaymentEventListener(@Value("${application.consumer.delay:10000}")
                                 String delay,
                                 @Value("${application.consumer.poolSize:1}")
                                 String poolSize,
-                                PaymentMessageHandler handler) {
-        this.handler = handler;
+                                PaymentUseCase service) {
+        this.service = service;
         boundedElastic = Schedulers.newBoundedElastic(Integer.parseInt(poolSize), 10000,
             "paymentListenerPool", 600, true);
 
@@ -59,7 +59,7 @@ public class PaymentEventListener implements CommandLineRunner {
                         Objects.requireNonNull(triggerContext.lastScheduledExecutionTime()),
                         new Date(),
                         null))
-                    .flatMapMany(__ -> handler.handleEvent())
+                    .flatMapMany(__ -> service.handleEvent())
                     .doOnComplete(() -> triggerContext.update(
                         Objects.requireNonNull(triggerContext.lastScheduledExecutionTime()),
                         Objects.requireNonNull(triggerContext.lastActualExecutionTime()),

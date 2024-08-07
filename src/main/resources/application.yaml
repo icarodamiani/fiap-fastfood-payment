@@ -19,7 +19,8 @@ spring:
 
 aws:
   sqs:
-    queue: ${SQS_QUEUE_NAME:payment_queue}
+    payment:
+      queue: ${SQS_QUEUE_NAME:payment_queue}
     numberOfMessages: 5
     waitTimeMessage: 10
     numberOfRetries: 10

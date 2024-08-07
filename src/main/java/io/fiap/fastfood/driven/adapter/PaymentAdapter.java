@@ -9,39 +9,45 @@ import io.fiap.fastfood.driven.core.domain.model.OrderTracking;
 import io.fiap.fastfood.driven.core.domain.model.Payment;
 import io.fiap.fastfood.driven.core.domain.payment.mapper.PaymentMapper;
 import io.fiap.fastfood.driven.core.domain.payment.port.outbound.PaymentPort;
-import io.fiap.fastfood.driven.core.domain.tracking.port.outbound.OrderTrackingPort;
+import io.fiap.fastfood.driven.core.domain.tracking.port.outbound.TrackingPort;
 import io.fiap.fastfood.driven.core.entity.PaymentEntity;
 import io.fiap.fastfood.driven.core.exception.BadRequestException;
 import io.fiap.fastfood.driven.core.exception.DuplicatedKeyException;
+import io.fiap.fastfood.driven.core.messaging.MessagingPort;
 import io.fiap.fastfood.driven.repository.PaymentRepository;
 import io.vavr.CheckedFunction1;
 import io.vavr.CheckedFunction2;
 import io.vavr.Function1;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import software.amazon.awssdk.services.sqs.model.Message;
 
-@Component
+@Service
 public class PaymentAdapter implements PaymentPort {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PaymentAdapter.class);
-
+    private final String queue;
+    private final MessagingPort messagingPort;
 
     private final MercadoPagoClient paymentClient;
-    private final OrderTrackingPort orderTrackingPort;
+    private final TrackingPort orderTrackingPort;
 
     private final PaymentRepository repository;
     private final PaymentMapper mapper;
     private final ObjectMapper objectMapper;
 
-    public PaymentAdapter(PaymentRepository repository,
+    public PaymentAdapter(@Value("${aws.sqs.payment.queue}") String queue,
+                          MessagingPort messagingPort,
+                          PaymentRepository repository,
                           PaymentMapper mapper,
                           ObjectMapper objectMapper,
                           MercadoPagoClient paymentClient,
-                          OrderTrackingPort orderTrackingPort) {
+                          TrackingPort orderTrackingPort) {
+        this.queue = queue;
+        this.messagingPort = messagingPort;
         this.repository = repository;
         this.mapper = mapper;
         this.objectMapper = objectMapper;
@@ -99,5 +105,14 @@ public class PaymentAdapter implements PaymentPort {
             .withOrderStatus("PAYMENT_CONFIRMED")
             .withOrderStatusValue("2")
             .build();
+    }
+
+    @Override
+    public Flux<Message> readPayment(Function1<Payment, Mono<Payment>> handle) {
+        return messagingPort.read(queue, handle, readEvent());
+    }
+
+    private CheckedFunction1<Message, Payment> readEvent() {
+        return message -> objectMapper.readValue(message.body(), Payment.class);
     }
 }
