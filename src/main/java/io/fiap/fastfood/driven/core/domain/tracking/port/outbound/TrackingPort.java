@@ -1,10 +1,11 @@
 package io.fiap.fastfood.driven.core.domain.tracking.port.outbound;
 
-import io.fiap.fastfood.driven.core.domain.model.OrderTracking;
+import io.fiap.fastfood.driven.core.domain.model.Tracking;
 import reactor.core.publisher.Mono;
+import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 
 public interface TrackingPort {
 
-    Mono<Void> create(OrderTracking tracking);
+    Mono<SendMessageResponse> create(Tracking tracking);
 
 }

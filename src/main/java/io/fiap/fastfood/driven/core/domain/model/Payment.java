@@ -9,7 +9,8 @@ public record Payment(
     String method,
     BigDecimal total,
     LocalDateTime dateTime,
-    String orderId) {
+    String orderId,
+    PaymentStatus status) {
 
 
     public static final class PaymentBuilder {
@@ -18,6 +19,7 @@ public record Payment(
         private BigDecimal total;
         private LocalDateTime dateTime;
         private String orderId;
+        private PaymentStatus status;
 
         private PaymentBuilder() {
         }
@@ -32,7 +34,8 @@ public record Payment(
                 .withOrderId(payment.orderId)
                 .withDateTime(payment.dateTime)
                 .withMethod(payment.method)
-                .withTotal(payment.total);
+                .withTotal(payment.total)
+                .withStatus(payment.status);
         }
 
         public PaymentBuilder withId(String id) {
@@ -60,8 +63,13 @@ public record Payment(
             return this;
         }
 
+        public PaymentBuilder withStatus(PaymentStatus status) {
+            this.status = status;
+            return this;
+        }
+
         public Payment build() {
-            return new Payment(id, method, total, dateTime, orderId);
+            return new Payment(id, method, total, dateTime, orderId, status);
         }
     }
 }

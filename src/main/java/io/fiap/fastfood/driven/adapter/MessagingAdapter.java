@@ -23,6 +23,7 @@ import software.amazon.awssdk.services.sqs.model.ReceiptHandleIsInvalidException
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
+import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 
 @Service
 public class MessagingAdapter implements MessagingPort {
@@ -95,7 +96,7 @@ public class MessagingAdapter implements MessagingPort {
     }
 
     @Override
-    public <T> Mono<Void> send(String queue, T payload, CheckedFunction1<T, String> serialize) {
+    public <T> Mono<SendMessageResponse> send(String queue, T payload, CheckedFunction1<T, String> serialize) {
         return Mono.just(serialize.unchecked().apply(payload))
             .zipWith(getQueueUrl().apply(queue))
             .map(t -> buildMessageRequest().unchecked().apply(t))
@@ -104,8 +105,7 @@ public class MessagingAdapter implements MessagingPort {
             .doOnError(throwable -> LOGGER.error("Failed to send message due to error.", throwable))
             .doOnSuccess(response ->
                 LOGGER.debug("Message published to queue. Message ID: {} Body: {}", response.messageId(),
-                    response.md5OfMessageBody()))
-            .then();
+                    response.md5OfMessageBody()));
     }
 
     private CheckedFunction1<Tuple2<String, GetQueueUrlResponse>, SendMessageRequest> buildMessageRequest() {

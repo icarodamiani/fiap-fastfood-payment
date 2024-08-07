@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import io.fiap.fastfood.driven.client.MercadoPagoClient;
-import io.fiap.fastfood.driven.core.domain.model.OrderTracking;
+import io.fiap.fastfood.driven.core.domain.model.Tracking;
 import io.fiap.fastfood.driven.core.domain.model.Payment;
 import io.fiap.fastfood.driven.core.domain.payment.mapper.PaymentMapper;
 import io.fiap.fastfood.driven.core.domain.payment.port.outbound.PaymentPort;
@@ -99,8 +99,8 @@ public class PaymentAdapter implements PaymentPort {
         };
     }
 
-    private Function1<Payment, OrderTracking> toTracking() {
-        return payment -> OrderTracking.OrderTrackingBuilder.builder()
+    private Function1<Payment, Tracking> toTracking() {
+        return payment -> Tracking.OrderTrackingBuilder.builder()
             .withOrderId(payment.orderId())
             .withOrderStatus("PAYMENT_CONFIRMED")
             .withOrderStatusValue("2")

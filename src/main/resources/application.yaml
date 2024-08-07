@@ -27,6 +27,10 @@ aws:
     visibilityTimeOut: 30
     tracking:
       queue: ${TRACKING_QUEUE_NAME:tracking_queue}
+    notification:
+      queue: ${NOTIFICATION_QUEUE_NAME:notification_queue}
+    order-cancel:
+      queue: ${ORDER_CANCEL_QUEUE_NAME:order_cancellation_queue}
 
 payment:
   webhook: ${WEBHOOK_URL:http://fastfood-payment:8080/v1/payment/receive}
