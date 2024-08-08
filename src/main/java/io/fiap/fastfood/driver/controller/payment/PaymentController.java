@@ -2,6 +2,7 @@ package io.fiap.fastfood.driver.controller.payment;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import io.fiap.fastfood.driven.core.domain.model.Payment;
 import io.fiap.fastfood.driven.core.domain.payment.mapper.PaymentMapper;
 import io.fiap.fastfood.driven.core.domain.payment.port.inbound.PaymentUseCase;
 import io.fiap.fastfood.driven.core.exception.HttpStatusExceptionConverter;
@@ -46,7 +47,7 @@ public class PaymentController {
         @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
         @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
-    public Mono<ResponseEntity<Void>> receive(@RequestBody PaymentDTO payment) {
+    public Mono<ResponseEntity<Payment>> receive(@RequestBody PaymentDTO payment) {
         return paymentUseCase.update(mapper.domainFromDto(payment))
             .map(ResponseEntity::ok)
             .defaultIfEmpty(ResponseEntity.notFound().build())

@@ -17,7 +17,7 @@ public record PaymentEntity(
     @Field
     LocalDateTime dateTime,
     @Field
-    String orderId,
+    String orderNumber,
     @Field
     Boolean paid) {
 
@@ -26,7 +26,7 @@ public record PaymentEntity(
         private String method;
         private BigDecimal total;
         private LocalDateTime dateTime;
-        private String orderId;
+        private String orderNumber;
         private Boolean paid;
 
         private PaymentEntityBuilder() {
@@ -56,8 +56,8 @@ public record PaymentEntity(
             return this;
         }
 
-        public PaymentEntityBuilder withOrderId(String orderId) {
-            this.orderId = orderId;
+        public PaymentEntityBuilder withOrderNumber(String orderNumber) {
+            this.orderNumber = orderNumber;
             return this;
         }
 
@@ -67,7 +67,7 @@ public record PaymentEntity(
         }
 
         public PaymentEntity build() {
-            return new PaymentEntity(id, method, total, dateTime, orderId, paid);
+            return new PaymentEntity(id, method, total, dateTime, orderNumber, paid);
         }
     }
 

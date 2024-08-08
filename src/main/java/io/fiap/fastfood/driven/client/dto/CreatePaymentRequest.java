@@ -16,7 +16,7 @@ public record CreatePaymentRequest(
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.yyyy'Z'")
     LocalDateTime dateTime,
-    String orderId,
+    String orderNumber,
     String webhook,
     String status) {
 
@@ -26,7 +26,7 @@ public record CreatePaymentRequest(
         private String method;
         private BigDecimal amount;
         private LocalDateTime dateTime;
-        private String orderId;
+        private String orderNumber;
         private String webhook;
         private String status;
 
@@ -57,8 +57,8 @@ public record CreatePaymentRequest(
             return this;
         }
 
-        public CreatePaymentRequestBuilder withOrderId(String orderId) {
-            this.orderId = orderId;
+        public CreatePaymentRequestBuilder withOrderNumber(String orderNumber) {
+            this.orderNumber = orderNumber;
             return this;
         }
 
@@ -73,7 +73,7 @@ public record CreatePaymentRequest(
         }
 
         public CreatePaymentRequest build() {
-            return new CreatePaymentRequest(id, method, amount, dateTime, orderId, webhook, status);
+            return new CreatePaymentRequest(id, method, amount, dateTime, orderNumber, webhook, status);
         }
     }
 }

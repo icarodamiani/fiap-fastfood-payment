@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 import software.amazon.awssdk.services.sqs.model.Message;
 
 public interface PaymentUseCase {
-    Mono<Void> update(Payment payment);
+    Mono<Payment> update(Payment payment);
 
     Flux<Message> handleEvent();
 }

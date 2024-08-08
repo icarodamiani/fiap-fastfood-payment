@@ -9,7 +9,13 @@ spring:
   data:
     mongodb:
       repositories: true
-      port: 27021
+      port: 27017
+      #port: 27021
+
+payment:
+  webhook: http://localhost:8085/v1/payment/receive
+  client:
+    url: http://localhost:8084
 
 server:
   port: 8085

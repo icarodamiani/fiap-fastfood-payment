@@ -8,6 +8,7 @@ import io.vavr.CheckedFunction1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 
 @Service
 public class NotificationAdapter implements NotificationPort {
@@ -24,7 +25,7 @@ public class NotificationAdapter implements NotificationPort {
         this.queue = queue;
     }
 
-    public Mono<Void> sendNotification(Notification notification) {
+    public Mono<SendMessageResponse> sendNotification(Notification notification) {
         return messagingPort.send(queue, notification, serializePayload());
     }
 

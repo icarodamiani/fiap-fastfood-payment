@@ -1,13 +1,13 @@
 package io.fiap.fastfood.driven.core.domain.model;
 
 public record Tracking(
-        String orderId,
+        String orderNumber,
         String orderStatus,
         String orderStatusValue
 ) {
 
     public static final class OrderTrackingBuilder {
-        private String orderId;
+        private String orderNumber;
         private String orderStatus;
         private String orderStatusValue;
 
@@ -20,14 +20,14 @@ public record Tracking(
 
         public static OrderTrackingBuilder from(Tracking tracking) {
             return OrderTrackingBuilder.builder()
-                .withOrderId(tracking.orderId)
+                .withOrderNumber(tracking.orderNumber)
                 .withOrderStatus(tracking.orderStatus)
                 .withOrderStatusValue(tracking.orderStatusValue);
         }
 
 
-        public OrderTrackingBuilder withOrderId(String orderId) {
-            this.orderId = orderId;
+        public OrderTrackingBuilder withOrderNumber(String orderNumber) {
+            this.orderNumber = orderNumber;
             return this;
         }
 
@@ -44,7 +44,7 @@ public record Tracking(
 
 
         public Tracking build() {
-            return new Tracking(orderId, orderStatus, orderStatusValue);
+            return new Tracking(orderNumber, orderStatus, orderStatusValue);
         }
     }
 }

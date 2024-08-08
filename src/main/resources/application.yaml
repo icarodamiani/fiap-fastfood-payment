@@ -30,7 +30,7 @@ aws:
     notification:
       queue: ${NOTIFICATION_QUEUE_NAME:notification_queue}
     order-cancel:
-      queue: ${ORDER_CANCEL_QUEUE_NAME:order_cancellation_queue}
+      queue: ${ORDER_CANCEL_QUEUE_NAME:order_cancel_queue}
 
 payment:
   webhook: ${WEBHOOK_URL:http://fastfood-payment:8080/v1/payment/receive}

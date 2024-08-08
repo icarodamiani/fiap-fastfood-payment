@@ -11,7 +11,7 @@ public record PaymentDTO(
     BigDecimal amount,
     @Schema(example = "2023-10-21T09:00:44.495Z")
     LocalDateTime dateTime,
-    String orderId,
+    String orderNumber,
     String webhook,
     PaymentStatusDTO status) {
 
@@ -20,7 +20,7 @@ public record PaymentDTO(
         private String method;
         private BigDecimal amount;
         private LocalDateTime dateTime;
-        private String orderId;
+        private String orderNumber;
         private String webhook;
         private PaymentStatusDTO status;
         private PaymentBuilder() {
@@ -33,7 +33,7 @@ public record PaymentDTO(
         public static PaymentBuilder from(PaymentDTO payment) {
             return PaymentBuilder.builder()
                 .withId(payment.id)
-                .withOrderId(payment.orderId)
+                .withOrderNumber(payment.orderNumber)
                 .withDateTime(payment.dateTime)
                 .withMethod(payment.method)
                 .withAmount(payment.amount)
@@ -61,8 +61,8 @@ public record PaymentDTO(
             return this;
         }
 
-        public PaymentBuilder withOrderId(String orderId) {
-            this.orderId = orderId;
+        public PaymentBuilder withOrderNumber(String orderNumber) {
+            this.orderNumber = orderNumber;
             return this;
         }
 
@@ -77,7 +77,7 @@ public record PaymentDTO(
         }
 
         public PaymentDTO build() {
-            return new PaymentDTO(id, method, amount, dateTime, orderId, webhook, status);
+            return new PaymentDTO(id, method, amount, dateTime, orderNumber, webhook, status);
         }
     }
 }

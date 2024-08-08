@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import io.fiap.fastfood.driven.client.MercadoPagoClient;
-import io.fiap.fastfood.driven.core.domain.model.Tracking;
 import io.fiap.fastfood.driven.core.domain.model.Payment;
 import io.fiap.fastfood.driven.core.domain.payment.mapper.PaymentMapper;
 import io.fiap.fastfood.driven.core.domain.payment.port.outbound.PaymentPort;
@@ -58,7 +57,7 @@ public class PaymentAdapter implements PaymentPort {
 
     @Override
     public Mono<Payment> createPayment(Payment payment) {
-        return repository.findByOrderId(payment.orderId())
+        return repository.findByOrderNumber(payment.orderNumber())
             .next()
             .flatMap(c -> Mono.defer(() -> Mono.<PaymentEntity>error(DuplicatedKeyException::new)))
             .switchIfEmpty(Mono.defer(() -> repository.save(mapper.entityFromDomain(payment))
@@ -68,15 +67,13 @@ public class PaymentAdapter implements PaymentPort {
     }
 
     @Override
-    public Mono<Payment> updatePayment(String id, String operations) {
-        return repository.findById(id)
+    public Mono<Payment> updatePayment(String orderNumber, String operations) {
+        return repository.findByOrderNumber(orderNumber)
+            .takeLast(1)
+            .next()
             .map(payment -> applyPatch().unchecked().apply(payment, operations))
             .flatMap(repository::save)
             .map(mapper::domainFromEntity)
-            .doOnSuccess(payment ->
-                Mono.justOrEmpty(toTracking().apply(payment))
-                    .flatMap(orderTrackingPort::create)
-            )
             .onErrorMap(JsonPatchException.class::isInstance, BadRequestException::new);
     }
 
@@ -97,14 +94,6 @@ public class PaymentAdapter implements PaymentPort {
             final InputStream in = new ByteArrayInputStream(operations.getBytes());
             return objectMapper.readValue(in, JsonPatch.class);
         };
-    }
-
-    private Function1<Payment, Tracking> toTracking() {
-        return payment -> Tracking.OrderTrackingBuilder.builder()
-            .withOrderId(payment.orderId())
-            .withOrderStatus("PAYMENT_CONFIRMED")
-            .withOrderStatusValue("2")
-            .build();
     }
 
     @Override

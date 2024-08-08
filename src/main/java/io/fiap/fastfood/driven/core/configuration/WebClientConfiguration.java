@@ -24,7 +24,7 @@ public class WebClientConfiguration {
                                    @Value("${payment.client.readTimeout:50000}") Integer readTimeout,
                                    @Value("${payment.client.writeTimeout:50000}") Integer writeTimeout,
                                    @Value("${payment.client.maxConnections:5}") Integer maxConnections,
-                                   @Value("${payment.client.mock.url:http://localhost:8081}") String uri) {
+                                   @Value("${payment.client.url:http://localhost:8081}") String uri) {
         return getWebClient(connectionTimeout, responseTimeout, readTimeout, writeTimeout, maxConnections, uri, "payment");
     }
 
